@@ -1,9 +1,6 @@
 import json
-import sys
 from web3 import Web3
 from web3.providers.rpc import HTTPProvider
-
-sys.path.append('../eth-playgrounds')
 from private_keys import MORALIS_PRIVATE_KEY, PRIMARY_MAINNET_PUBLIC_KEY
 
 # Setup web3, connect to node.

@@ -1,0 +1,17 @@
+{
+  "name": "web3_python_tutorials",
+  "version": "1.0.0",
+  "description": "Code for tutorials based on interfacing with the Ethereum blockchain via Python",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ganache": "^6.4.5"
+  }
+}
