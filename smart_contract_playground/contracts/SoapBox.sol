@@ -1,4 +1,4 @@
-pragma solidity ^0.4.24;
+pragma solidity ^0.5.16;
 contract SoapBox {
 	// Our 'dict' of addresses that are approved to share opinions
 	mapping (address => bool) approvedSoapboxer;
@@ -13,7 +13,7 @@ contract SoapBox {
 
 	// Because this function is 'payable' it will be called when ether is sent
 	// to the contract address.
-	function() public payable {
+	function() external payable {
 		// msg is a special variable that contains information about the
 		// transaction.
 		if (msg.value > 20000000000000000) {
@@ -30,12 +30,12 @@ contract SoapBox {
 	}
 
 	// Read-only function that returns the current opinion.
-	function getCurrentOpinion() public view returns(string) {
+	function getCurrentOpinion() public view returns(string memory) {
 		return opinion;
 	}
 
 	// Our function that modifies the state on the blockchain.
-	function broadcastOpinion(string _opinion) public returns (bool success) {
+	function broadcastOpinion(string memory _opinion) public returns (bool success) {
 		// Looking up the address of the sending will return false if the sender
 		// isn't approved
 		if (approvedSoapboxer[msg.sender]) {
