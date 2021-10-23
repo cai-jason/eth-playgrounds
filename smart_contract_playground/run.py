@@ -11,7 +11,7 @@ acct = w3.eth.account.privateKeyToAccount(DEV_MAINNET_PRIVATE_KEY)
 # Generated after calling `compile_and_deploy()`
 contract_address = "0xF343fc8edBC58482ab505CfbF4e636D195E818DF"
 
-def compile_and_deploy():
+def step_1_compile_and_deploy():
 	# Compile smart contract with truffle
 	truffleFile = json.load(open("./build/contracts/SoapBox.json"))
 	abi = truffleFile["abi"]
@@ -33,7 +33,7 @@ def compile_and_deploy():
 	print("Contract Deployed At", txn_receipt["contractAddress"])
 
 
-def send_ether_to_contract(amount_in_ether):
+def step_2_send_ether_to_contract(amount_in_ether):
 	amount_in_wei = w3.toWei(amount_in_ether, "ether")
 	nonce = w3.eth.get_transaction_count(DEV_MAINNET_PUBLIC_KEY)
 	
@@ -51,4 +51,12 @@ def send_ether_to_contract(amount_in_ether):
 	print("%s ether successfully sent to contract address" % amount_in_ether)
 
 
-send_ether_to_contract(0.2)
+def step_3_check_whether_address_is_approved(address):
+	truffleFile = json.load(open("./build/contracts/SoapBox.json"))
+	abi = truffleFile["abi"]
+	contract = w3.eth.contract(abi=abi, address=contract_address)
+	is_approved = contract.functions.isApproved(address).call()
+	print("address: %s is approved:", is_approved)
+
+
+step_3_check_whether_address_is_approved(DEV_MAINNET_PUBLIC_KEY)
