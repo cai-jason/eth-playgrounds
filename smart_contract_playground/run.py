@@ -11,6 +11,10 @@ acct = w3.eth.account.privateKeyToAccount(DEV_MAINNET_PRIVATE_KEY)
 # Generated after calling `compile_and_deploy()`
 contract_address = "0xF343fc8edBC58482ab505CfbF4e636D195E818DF"
 
+truffleFile = json.load(open("./build/contracts/SoapBox.json"))
+abi = truffleFile["abi"]
+contract = w3.eth.contract(abi=abi, address=contract_address)
+
 def step_1_compile_and_deploy():
 	# Compile smart contract with truffle
 	truffleFile = json.load(open("./build/contracts/SoapBox.json"))
@@ -52,11 +56,28 @@ def step_2_send_ether_to_contract(amount_in_ether):
 
 
 def step_3_check_whether_address_is_approved(address):
-	truffleFile = json.load(open("./build/contracts/SoapBox.json"))
-	abi = truffleFile["abi"]
-	contract = w3.eth.contract(abi=abi, address=contract_address)
 	is_approved = contract.functions.isApproved(address).call()
 	print("address: %s is approved:", is_approved)
 
 
-step_3_check_whether_address_is_approved(DEV_MAINNET_PUBLIC_KEY)
+def step_4_broadcast_an_opinion(opinion):
+	txn = contract.functions.broadcastOpinion(opinion).buildTransaction({
+		'chainId': 3,
+		'gas': 140000,
+		'gasPrice': w3.toWei('40', 'gwei'),
+		'nonce': w3.eth.get_transaction_count(DEV_MAINNET_PUBLIC_KEY)
+	})
+	signed_txn = acct.sign_transaction(txn)
+	txn_hash = w3.eth.send_raw_transaction(signed_txn.rawTransaction)
+	txn_receipt = w3.eth.wait_for_transaction_receipt(txn_hash)
+
+	processed_receipt = contract.events.OpinionBroadcast().processReceipt(txn_receipt)
+	print("Processed receipt:", processed_receipt)
+
+	print("Address %s broadcasted the opinion %s" % 
+		(processed_receipt[0].args._soapboxer, processed_receipt[0].args._opinion)
+	)
+
+
+step_4_broadcast_an_opinion("mayonaise is an instrument")
+
